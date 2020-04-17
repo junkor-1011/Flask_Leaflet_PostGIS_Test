@@ -1,0 +1,4 @@
+src_tag=python37_slim_buster
+USER_UID=1000
+PORT=8443
+

@@ -1,0 +1,4 @@
+src_tag=centos8
+USER_UID=1000
+PORT=8443
+
