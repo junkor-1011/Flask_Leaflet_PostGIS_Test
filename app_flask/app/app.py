@@ -4,9 +4,14 @@ import json, io, datetime, codecs, os, random
 from uuid import uuid4
 from hashlib import md5, sha256
 
-
+# Flask
 from flask import Flask, render_template, request, jsonify, make_response,\
     send_file, session, abort, flash, url_for, redirect, Response
+# Flask-SQLAlchemy
+#from flask_sqlalchemy import SQLAlchemy
+from database import init_db
+import models
+# from models import **, **, ...
 
 # logging
 # ref: https://qiita.com/amedama/items/b856b2f30c2f38665701
@@ -21,18 +26,27 @@ logger.propagate = False
 # Mapbox
 try:
     #from .mapbox_settings import access_token
-    from mapbox_settings import access_token
+    from confs.mapbox_settings import access_token
 except Exception as e:
     logger.warning(f"Import Error{str(e)}")
     logger.warning(f"No Mapbox-accessToken")
 
 
+# create app
+def create_app():
+    """
+    """
 
-app = Flask(__name__)
+    app = Flask(__name__)
 
-app.secret_key = md5(str(uuid4()).encode()).hexdigest()     # 要らないかも?
-app.config['SECRET_KEY'] = sha256(str(uuid4()).encode()).hexdigest()
+    app.secret_key = md5(str(uuid4()).encode()).hexdigest()     # 要らないかも?
+    app.config['SECRET_KEY'] = sha256(str(uuid4()).encode()).hexdigest()
 
+    init_db(app)
+    
+    return app
+
+app = create_app()
 
 @app.route('/', methods=['GET'])
 def main():
