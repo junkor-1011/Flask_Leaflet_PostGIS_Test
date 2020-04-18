@@ -26,6 +26,7 @@ class Iris(db.Model):
     sepal_width = db.Column(db.Float, nullable=False)
     petal_length = db.Column(db.Float, nullable=False)
     petal_width = db.Column(db.Float, nullable=False)
+    species = db.Column(db.String(255), nullable=False, index=True)
     created_at = db.Column(db.DateTime, nullable=True, default=datetime.datetime.now)
     updated_at = db.Column(db.DateTime, nullable=True, default=datetime.datetime.now, onupdate=datetime.datetime.now)
 
@@ -40,6 +41,17 @@ class Flights(db.Model):
     month = db.Column(db.String(255), primary_key=True, nullable=False)
     passengers = db.Column(db.Integer, nullable=False)
 
+
+class Dots(db.Model):
+
+    __tablename__ = 'dots'
+
+    id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
+    align = db.Column(db.String(255), nullable=False)
+    choice = db.Column(db.String(255), nullable=False)
+    time = db.Column(db.Integer, nullable=False)
+    coherence = db.Column(db.Float, nullable=False)
+    firing_rate = db.Column(db.Float, nullable=False)
 
 
 
