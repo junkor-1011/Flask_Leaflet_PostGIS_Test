@@ -41,12 +41,14 @@ def create_app():
 
     app.secret_key = md5(str(uuid4()).encode()).hexdigest()     # 要らないかも?
     app.config['SECRET_KEY'] = sha256(str(uuid4()).encode()).hexdigest()
+    app.config.from_object('confs.config_db.Config')
 
     init_db(app)
     
     return app
 
 app = create_app()
+
 
 @app.route('/', methods=['GET'])
 def main():
