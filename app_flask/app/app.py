@@ -1,0 +1,78 @@
+#!/usr/bin/env python
+
+import json, io, datetime, codecs, os, random
+from uuid import uuid4
+from hashlib import md5, sha256
+
+# Flask
+from flask import Flask, render_template, request, jsonify, make_response,\
+    send_file, session, abort, flash, url_for, redirect, Response
+# Flask-SQLAlchemy
+#from flask_sqlalchemy import SQLAlchemy
+from database import init_db
+import models
+# from models import **, **, ...
+
+# logging
+# ref: https://qiita.com/amedama/items/b856b2f30c2f38665701
+from logging import getLogger, StreamHandler, DEBUG
+logger = getLogger(__name__)
+handler = StreamHandler()
+handler.setLevel(DEBUG)
+logger.setLevel(DEBUG)
+logger.addHandler(handler)
+logger.propagate = False
+
+# Mapbox
+try:
+    #from .mapbox_settings import access_token
+    from confs.mapbox_settings import access_token
+except Exception as e:
+    logger.warning(f"Import Error{str(e)}")
+    logger.warning(f"No Mapbox-accessToken")
+
+
+# create app
+def create_app():
+    """
+    """
+
+    app = Flask(__name__)
+
+    app.secret_key = md5(str(uuid4()).encode()).hexdigest()     # 要らないかも?
+    app.config['SECRET_KEY'] = sha256(str(uuid4()).encode()).hexdigest()
+    app.config.from_object('confs.config_db.Config')
+
+    init_db(app)
+    
+    return app
+
+app = create_app()
+
+
+@app.route('/', methods=['GET'])
+def main():
+    title = "Main Menu"
+    return render_template('main.html', title=title, access_token=access_token)
+    
+
+@app.route('/post_test_tmp1', methods=['POST'])
+def post_test_tmp1():
+    arg1 = request.form['arg1']
+    arg2 = request.form['arg2']
+    response_object = {
+        "message": "Hello, WORLD",
+        "get_args":
+            {"arg1": arg1, "arg2": arg2},
+    }
+    return Response(response=json.dumps(response_object), status=200)
+
+
+if __name__ == '__main__':
+    app.debug = True
+    app.run(
+            #host='0.0.0.0',
+            #port=5000,
+            #ssl_context=('ssl/server.crt', 'ssl/server.key'),
+            #threaded=True,        
+    )

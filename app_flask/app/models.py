@@ -1,0 +1,57 @@
+"""おおよそDBのテーブルスキーマに対応
+
+"""
+
+import datetime
+
+from database import db
+
+
+class User(db.Model):
+
+    __tablename__ = 'users'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
+    updated_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now, onupdate=datetime.datetime.now)
+
+
+class Iris(db.Model):
+
+    __tablename__ = 'iris'
+
+    id = db.Column(db.Integer, primary_key=True)
+    sepal_length = db.Column(db.Float, nullable=False)
+    sepal_width = db.Column(db.Float, nullable=False)
+    petal_length = db.Column(db.Float, nullable=False)
+    petal_width = db.Column(db.Float, nullable=False)
+    species = db.Column(db.String(255), nullable=False, index=True)
+    created_at = db.Column(db.DateTime, nullable=True, default=datetime.datetime.now)
+    updated_at = db.Column(db.DateTime, nullable=True, default=datetime.datetime.now, onupdate=datetime.datetime.now)
+
+
+class Flights(db.Model):
+
+    __tablename__ = 'flights'
+    __table_args__ = (db.UniqueConstraint("year", "month", name="unique_year_month"), )
+    # https://qiita.com/petitviolet/items/e03c67794c4e335b6706
+
+    year = db.Column(db.Integer, primary_key=True, nullable=False)
+    month = db.Column(db.String(255), primary_key=True, nullable=False)
+    passengers = db.Column(db.Integer, nullable=False)
+
+
+class Dots(db.Model):
+
+    __tablename__ = 'dots'
+
+    id = db.Column(db.Integer, primary_key=True, nullable=False, autoincrement=True)
+    align = db.Column(db.String(255), nullable=False)
+    choice = db.Column(db.String(255), nullable=False)
+    time = db.Column(db.Integer, nullable=False)
+    coherence = db.Column(db.Float, nullable=False)
+    firing_rate = db.Column(db.Float, nullable=False)
+
+
+

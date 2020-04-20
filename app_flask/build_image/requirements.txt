@@ -1,0 +1,26 @@
+# ref: https://pip.pypa.io/en/latest/reference/pip_install/#example-requirements-file
+
+###### Requirements without Version Specifiers ######
+uwsgi
+flask
+flask-sqlalchemy
+SQLAlchemy
+Flask-Migrate
+pymysql
+psycopg2
+#flask-httpauth
+#flask-jwt
+#
+###### Requirements with Version Specifiers ######
+#   See https://www.python.org/dev/peps/pep-0440/#version-specifiers
+#pandas==1.*
+#
+###### Refer to other requirements files ######
+#
+#
+###### A particular file ######
+
+###### Additional Requirements without Version Specifiers ######
+#   Same as 1st section, just here to show that you can put things in any order.
+#
+

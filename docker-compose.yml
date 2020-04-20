@@ -1,0 +1,77 @@
+version: '3'
+
+services:
+  web_nginx:
+    container_name: web_nginx
+    hostname: web_server
+    image: nginx:${NGINX_VERSION:-1.17.9-alpine}
+    depends_on:
+      - app_flask
+    ports:
+            - "${PORT:-8443}:443"
+    volumes:
+      - ./web_nginx/conf.d:/etc/nginx/conf.d
+      - ./web_nginx/ssl:/etc/nginx/ssl
+    networks:
+      - nginx_network
+
+  app_flask:
+    container_name: app_flask
+    hostname: ap_server
+    image: app_flask_test_${src_tag}
+    expose: 
+      - 5000
+    networks:
+      - nginx_network
+      - db_network
+    volumes:
+      - ./app_flask/app:/app
+    depends_on:
+      - db_postgis
+    #links:
+      #- db_postgis:db_postgis
+
+  db_postgis:
+    container_name: db_postgis
+    #hostname: db_postgis_server
+    image: mdillon/postgis:${POSTGIS_VERSION:-11-alpine}
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-test_db}
+      POSTGRES_USER: ${POSTGRES_USER:-test_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+      #POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      # https://qiita.com/ko-da-k/items/47b96883144a5bf1cb1e
+      - ./db_postgre/data:/var/lib/postgresql/data
+      - ./db_postgre/sql:/docker-entrypoint-initdb.d
+    ports:
+      - ${PORT_POSTGRE:-15432}:5432
+    restart: unless-stopped
+    networks:
+      - db_network
+
+  # https://qiita.com/mabubu0203/items/5cdff1caf2b024df1d95  
+  # https://sekom.hatenablog.com/entry/2019/10/11/000000
+  pgadmin4:
+    image: dpage/pgadmin4:${VERSION_PGADMIN4:-4.2}
+    container_name: pgadmin4
+    ports:
+      - ${PORT_PGADMIN:-10080}:80
+    volumes:
+      - ./pgadmin:/var/lib/pgadmin/storage
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-root}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-root}
+    hostname: pgadmin4
+    #restart: always
+    restart: unless-stopped
+    networks:
+      - db_network
+
+networks:
+  nginx_network:
+    driver: bridge
+  db_network:
+    driver: bridge
+

@@ -1,0 +1,7 @@
+__pycache__
+*key
+*crt
+.env
+.vscode
+pgadmin
+.*swp

@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  web_nginx:
+    image: nginx:1.17.9-alpine
+    depends_on:
+    - app_flask
+    ports:
+            - "${PORT:-8443}:443"
+    volumes:
+      - ./web_nginx/conf.d:/etc/nginx/conf.d
+      - ./web_nginx/ssl:/etc/nginx/ssl
+    networks:
+      - nginx_network
+
+  app_flask:
+    image: app_flask_test_${src_tag}
+    expose: 
+      - 5000
+    networks:
+      - nginx_network
+
+networks:
+  nginx_network:
+    driver: bridge
+
+
+# run: `docker-compose  -f docker-compose_prod.yml up -d`

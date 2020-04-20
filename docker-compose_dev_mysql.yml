@@ -1,0 +1,82 @@
+version: '3'
+
+services:
+  web_nginx:
+    container_name: web_nginx
+    hostname: web_server
+    image: nginx:${NGINX_VERSION:-1.17.9-alpine}
+    depends_on:
+      - app_flask
+    ports:
+            - "${PORT:-8443}:443"
+    volumes:
+      - ./web_nginx/conf.d:/etc/nginx/conf.d
+      - ./web_nginx/ssl:/etc/nginx/ssl
+    networks:
+      - nginx_network
+
+  app_flask:
+    container_name: app_flask
+    hostname: ap_server
+    image: app_flask_test_${src_tag}
+    expose: 
+      - 5000
+    networks:
+      - nginx_network
+      - db_network
+    volumes:
+      - ./app_flask/app:/app
+    depends_on:
+      #- db_postgis
+      - db_mysql
+    environment:
+      USING_DB: ${USING_DB:-MySQL}
+
+  # https://qiita.com/naente_dev/items/d259ea84c172deeff7d8
+  # https://qiita.com/A-Kira/items/f401aea261693c395966
+  # https://hub.docker.com/_/mysql  entrypointはpostgre同様使えそう
+  db_mysql:
+    container_name: db_mysql
+    image: mysql:${MYSQL_VERSION:-5.7}
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root}
+      MYSQL_DATABASE: ${MYSQL_DB:-test_db}
+      MYSQL_USER: ${MYSQL_USER:-test_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-password}
+      #TZ: ${TZ_MYSQL:-'Asia/Tokyo'}
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./db_mysql/data:/var/lib/mysql
+      - ./db_mysql/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./db_mysql/sql:/docker-entrypoint-initdb.d
+    ports:
+            - ${PORT_MYSQL:-13306}:3306
+    networks:
+    restart: unless-stopped
+    networks:
+      - db_network
+
+
+  # phpMyAdmin
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_ARBITRARY: 1
+      PMA_HOSTS: db_mysql
+      PMA_USER: ${PMA_USER:-root}
+      PMA_PASSWORD: ${PMA_USER:-root}
+    ports:
+     - 10080:80
+    restart: unless-stopped
+    networks:
+      - db_network
+    hostname: phpmyadmin
+
+
+networks:
+  nginx_network:
+    driver: bridge
+  db_network:
+    driver: bridge
+

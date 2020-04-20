@@ -1,0 +1,40 @@
+version: '3'
+
+services:
+  web_nginx:
+    container_name: web_nginx
+    hostname: web_server
+    image: nginx:${NGINX_VERSION:-1.17.9-alpine}
+    depends_on:
+      - app_flask
+    ports:
+            - "${PORT:-8443}:443"
+    volumes:
+      - ./web_nginx/conf.d:/etc/nginx/conf.d
+      - ./web_nginx/ssl:/etc/nginx/ssl
+    networks:
+      - nginx_network
+
+  app_flask:
+    container_name: app_flask
+    hostname: ap_server
+    image: app_flask_test_${src_tag}
+    expose: 
+      - 5000
+    networks:
+      - nginx_network
+      #- db_network
+    volumes:
+      - ./app_flask/app:/app
+      - ./db_sqlite3:/app/db_sqlite3
+    #depends_on:
+      #- db_postgis
+      #- db_mysql
+    environment:
+      USING_DB: ${USING_DB:-SQLite3}
+
+
+networks:
+  nginx_network:
+    driver: bridge
+
