@@ -42,8 +42,10 @@ class User(db.Model):
         self.id = id
         self.name = name
 
-    def get_users(self):
-        records = self.query.distinct(self.name)
+    def get_users():
+        #records = User.query.distinct(User.name)    # db.session.query(User).distinct(User.name)
+        #records = db.session.query(User).distinct(User.name)
+        records = db.session.query(User.name).distinct()
         users = [v.name for v in records]
         return users
 

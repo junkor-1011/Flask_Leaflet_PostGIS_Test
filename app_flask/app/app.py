@@ -81,6 +81,13 @@ def models_test_create_user():
     return Response(response=json.dumps({'user': user,}), status=200)
 
 
+@app.route('/models_test/get_users', methods=['GET'])
+def models_test_get_users():
+    users = User.get_users()
+
+    return Response(response=json.dumps({'users': users}), status=200)
+
+
 
 if __name__ == '__main__':
     app.debug = True
