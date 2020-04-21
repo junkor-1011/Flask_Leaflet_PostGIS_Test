@@ -60,3 +60,6 @@ mysql -u ${MYSQL_USER} -h ${HOST} -P ${PORT} -p -D ${MYSQL_DB} < "./insert-dots.
 mysql -u ${MYSQL_USER} -h ${HOST} -P ${PORT} -p -D ${MYSQL_DB} < "./insert-flights.sql"
 
 
+# geo_point_test_a                                             
+mysql -u ${MYSQL_USER} -h ${HOST} -P ${PORT} -p -D ${MYSQL_DB} < "./insert-geo_point_test_a.sql"
+

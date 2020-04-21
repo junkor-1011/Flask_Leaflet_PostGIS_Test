@@ -7,6 +7,28 @@ import datetime
 from database import db
 
 
+class GeoPointTestA(db.Model):
+
+    __tablename__ = 'geo_point_test_a'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255), nullable=False)
+    order = db.Column(db.Integer, nullable=False)
+    p_type = db.Column(db.String(255), nullable=False)
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+    val_int = db.Column(db.Integer, nullable=True)
+    val_float = db.Column(db.Float, nullable=True)
+    timestamp = db.Column(db.DateTime, nullable=False)
+    ts_int = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
+    updated_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now, onupdate=datetime.datetime.now)
+    date = db.Column(db.Date, nullable=False)
+    # todo method
+
+
+
+
 class User(db.Model):
 
     __tablename__ = 'users'
