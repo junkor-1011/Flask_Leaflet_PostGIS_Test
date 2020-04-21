@@ -38,6 +38,24 @@ class User(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now, onupdate=datetime.datetime.now)
 
+    def __init__(self, id, name):
+        self.id = id
+        self.name = name
+
+    def get_users(self):
+        records = self.query.distinct(self.name)
+        users = [v.name for v in records]
+        return users
+
+    def register_user(user):
+        record = User(id=user['id'], name=user['name'])
+
+        db.session.add(record)
+        db.session.commit()
+
+        return user
+
+
 
 class Iris(db.Model):
 

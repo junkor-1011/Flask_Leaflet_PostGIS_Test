@@ -11,6 +11,7 @@ from flask import Flask, render_template, request, jsonify, make_response,\
 #from flask_sqlalchemy import SQLAlchemy
 from database import init_db
 import models
+from models import GeoPointTestA, User, Dots, Flights, Iris
 # from models import **, **, ...
 
 # logging
@@ -66,6 +67,19 @@ def post_test_tmp1():
             {"arg1": arg1, "arg2": arg2},
     }
     return Response(response=json.dumps(response_object), status=200)
+
+
+@app.route('/models_test/create_user', methods=['POST'])
+def models_test_create_user():
+    #data = json.loads(request.get_json())  # todo: headerでContent-Typeを確認する方がベターかも
+    json_data = json.dumps(request.get_json())  # todo: headerでContent-Typeを確認する方がベターかも
+    data = json.loads(json_data)
+    print(data)
+
+    user = User.register_user(data)
+
+    return Response(response=json.dumps({'user': user,}), status=200)
+
 
 
 if __name__ == '__main__':
