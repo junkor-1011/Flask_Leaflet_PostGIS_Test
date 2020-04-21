@@ -4,6 +4,8 @@
 
 import datetime
 
+#from sqlalchemy.sql import text
+
 from database import db
 
 
@@ -47,7 +49,11 @@ class User(db.Model):
         #records = db.session.query(User).distinct(User.name)
         records = db.session.query(User.name).distinct()
         users = [v.name for v in records]
-        return users
+
+        rec_count = User.query.count()
+
+        #return users
+        return {"users": users, "record_count": rec_count}
 
     def register_user(user):
         record = User(id=user['id'], name=user['name'])
@@ -57,6 +63,19 @@ class User(db.Model):
 
         return user
 
+    def get_users_with_text(limit_num=2):
+        """***
+
+        - https://docs.sqlalchemy.org/en/13/orm/session_api.html#sqlalchemy.orm.session.Session.execute
+        """
+        #print(limit_num)   # for DEBUG
+        from sqlalchemy.sql import text
+        sql = text("SELECT DISTINCT name from users limit :limit")
+        #records = db.session.execute(t, limit=limit_num)
+        records = db.session.execute(sql, {"limit": limit_num})
+        users = [v.name for v in records]
+
+        return users
 
 
 class Iris(db.Model):

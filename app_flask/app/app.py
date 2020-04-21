@@ -83,10 +83,18 @@ def models_test_create_user():
 
 @app.route('/models_test/get_users', methods=['GET'])
 def models_test_get_users():
-    users = User.get_users()
+    #users = User.get_users()
+    results = User.get_users()
+
+    #return Response(response=json.dumps({'users': users}), status=200)
+    return Response(response=json.dumps({'results': results}), status=200)
+
+
+@app.route('/models_test/get_users_with_text', methods=['GET'])
+def models_test_get_users_with_text():
+    users = User.get_users_with_text()
 
     return Response(response=json.dumps({'users': users}), status=200)
-
 
 
 if __name__ == '__main__':
