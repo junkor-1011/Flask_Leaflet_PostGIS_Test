@@ -5,6 +5,19 @@ Note
 
 ### snipets
 
+#### `curl` with authentication & ssl (insecure)
+
+- https://qiita.com/greymd/items/68b0c40044a88171235a
+- https://hacknote.jp/archives/25380/
+- https://qiita.com/libra_lt/items/8102e9b10a17f2f7fb3b
+- https://qiita.com/sensuikan1973/items/b2085a9cdc6d1e97e8f8
+- https://qiita.com/ktooi/items/958bab82b828b389969a
+- https://qiita.com/sukakako/items/9273fa05948af43ab39d
+
+```Bash
+curl -k -u user:password -H 'Content-Type:application/json' -XPOST -d '{"id": "3", "name": "Casaline"}' https://127.0.0.1:8443/models_test/create_user
+```
+
 #### `pandas` with `SQLAlchemy`
 
 ```Python
