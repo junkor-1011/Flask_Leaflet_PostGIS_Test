@@ -58,8 +58,8 @@ services:
     container_name: pgadmin4
     ports:
       - ${PORT_PGADMIN:-10080}:80
-    volumes:
-      - ./pgadmin:/var/lib/pgadmin/storage
+    #volumes:
+    #  - ./pgadmin:/var/lib/pgadmin/storage
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL:-root}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-root}
