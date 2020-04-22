@@ -44,6 +44,14 @@ class User(db.Model):
         self.id = id
         self.name = name
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "created_at": self.created_at.isoformat(sep=" "),
+            "updated_at": self.updated_at.isoformat(sep=" "),
+        }
+
     def get_users():
         #records = User.query.distinct(User.name)    # db.session.query(User).distinct(User.name)
         #records = db.session.query(User).distinct(User.name)

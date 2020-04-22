@@ -9,7 +9,7 @@ from flask import Flask, render_template, request, jsonify, make_response,\
     send_file, session, abort, flash, url_for, redirect, Response
 # Flask-SQLAlchemy
 #from flask_sqlalchemy import SQLAlchemy
-from database import init_db
+from database import db, init_db
 import models
 from models import GeoPointTestA, User, Dots, Flights, Iris
 # from models import **, **, ...
@@ -95,6 +95,29 @@ def models_test_get_users_with_text():
     users = User.get_users_with_text()
 
     return Response(response=json.dumps({'users': users}), status=200)
+
+
+@app.route('/users/<int:id>', methods=['GET'])
+def users_rest_id(id):
+    """
+    """
+    if request.method == "GET":
+        user = db.session.query(User).filter(User.id == id).first()
+        if user is not None:
+            return Response(response=json.dumps(user.to_dict()), status=200)
+        else:
+            return Response(response=json.dumps({}), status=200)
+    else:
+        abort(400)
+        return
+
+
+@app.route('/users/utils/columns', methods=['GET'])
+def users_get_columns():
+
+    columns = User.__table__.c.keys()
+
+    return Response(response=json.dumps({'columns': columns}), status=200)
 
 
 if __name__ == '__main__':
