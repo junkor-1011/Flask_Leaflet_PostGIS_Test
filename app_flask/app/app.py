@@ -97,7 +97,7 @@ def models_test_get_users_with_text():
     return Response(response=json.dumps({'users': users}), status=200)
 
 
-@app.route('/users/<int:id>', methods=['GET'])
+@app.route('/users/<int:id>', methods=['GET', 'POST', 'DELETE'])
 def users_rest_id(id):
     """
     """
@@ -107,6 +107,29 @@ def users_rest_id(id):
             return Response(response=json.dumps(user.to_dict()), status=200)
         else:
             return Response(response=json.dumps({}), status=200)
+    elif request.method == "POST":
+        data = request.form
+        user = User(id=id, name=data['name'])
+        db.session.add(user)
+        try:
+            db.session.commit()
+            return Response(response=json.dumps({'id': id, 'name': data['name']}), status=200)
+        except Exception as e:
+            logger.error(f"ERROR: {str(e)}")
+            abort(400)
+            return  # TMP
+    elif request.method == "DELETE":
+        user = User.query.filter(User.id == id).first()
+        db.session.delete(user)
+        db.session.commit()
+
+        if user is not None:
+            ret = user.to_dict()
+        else:
+            ret = {}
+
+        return Response(response=json.dumps(ret), status=200)
+
     else:
         abort(400)
         return
