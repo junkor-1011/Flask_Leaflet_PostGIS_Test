@@ -29,6 +29,70 @@ class GeoPointTestA(db.Model):
     # todo method
 
 
+class CoordsEvent(db.Model):
+
+    __tablename__ = "coords_event"
+
+    event_id = db.Column(db.String(255), primary_key=True)
+    date = db.Column(db.Date, index=True, nullable=False)
+    status = db.Column(db.Boolean, nullable=False)
+    players_a = db.Column(db.JSON, nullable=True)
+    players_b = db.Column(db.JSON, nullable=True)
+    #arr_data = db.Column(db.ARRAY(db.String(255)), nullable=True)  # mysqlではコンパイルエラーが起きた
+    date = db.Column(db.Date, nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
+    updated_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now, onupdate=datetime.datetime.now)
+    coords_detail_a = db.relationship("CoordsDetailA", backref=db.backref("coords_event"))
+    coords_detail_b = db.relationship("CoordsDetailB", backref=db.backref("coords_event"))
+
+
+class CoordsDetailA(db.Model):
+    
+    __tablename__ = "coords_detail_a"
+
+    __table_args__ = (db.Index("ix_1", "event_id", "player", "latitude", "longitude", unique=True,), )
+
+    event_id = db.Column('event_id', db.String(255),
+        db.ForeignKey('coords_event.event_id',onupdate='CASCADE', ondelete='CASCADE'),
+        primary_key=True,
+    )
+    #event_id = db.Column(db.String(255), primary_key=True, index=True)
+    player = db.Column(db.String(255), primary_key=True)
+    visit_order = db.Column(db.Integer, primary_key=True)
+    site_id = db.Column(db.String(255))
+    site_type = db.Column(db.String(255))
+    rec_type = db.Column(db.String(255))
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+    val_a = db.Column(db.Float, nullable=True)
+    ts_utc = db.Column(db.DateTime, nullable=False)
+    ts_int = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
+    updated_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now, onupdate=datetime.datetime.now)
+
+
+class CoordsDetailB(db.Model):
+
+    __tablename__ = "coords_detail_b"
+
+    __table_args__ = (db.Index("ix_1", "event_id", "player", "latitude", "longitude", unique=True,), )
+
+    event_id = db.Column('event_id', db.String(255),
+        db.ForeignKey('coords_event.event_id',onupdate='CASCADE', ondelete='CASCADE'),
+        primary_key=True,
+    )
+    #event_id = db.Column(db.String(255), primary_key=True, index=True)
+    player = db.Column(db.String(255), primary_key=True)
+    visit_order = db.Column(db.Integer, primary_key=True)
+    site_id = db.Column(db.String(255))
+    latitude = db.Column(db.Float, nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+    val_b = db.Column(db.Float, nullable=True)
+    ts_utc = db.Column(db.DateTime, nullable=False)
+    ts_int = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
+    updated_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now, onupdate=datetime.datetime.now)
+
 
 
 class User(db.Model):
