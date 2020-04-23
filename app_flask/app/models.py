@@ -4,9 +4,28 @@
 
 import datetime
 
-#from sqlalchemy.sql import text
+# sqlalchemy
+from sqlalchemy import Table, MetaData, orm
+from sqlalchemy.sql import text
 
+import sqlalchemy_views
+
+# db
 from database import db
+
+
+# for handling View
+# ref: https://www.it-swarm.dev/ja/python/sqlalchemy%E3%81%A7sql%E3%83%93%E3%83%A5%E3%83%BC%E3%82%92%E4%BD%9C%E6%88%90%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95%E3%81%AF%EF%BC%9F/941845648/
+# https://stackoverflow.com/questions/9766940/how-to-create-an-sql-view-with-sqlalchemy
+views = []
+
+class View(Table):
+    is_view = True
+
+
+class CreateView(sqlalchemy_views.CreateView):
+    def __init__(self, view):
+        super().__init__(view.__view__, view.__definition__)
 
 
 class GeoPointTestA(db.Model):
@@ -42,8 +61,11 @@ class CoordsEvent(db.Model):
     date = db.Column(db.Date, nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now, onupdate=datetime.datetime.now)
-    coords_detail_a = db.relationship("CoordsDetailA", backref=db.backref("coords_event"))
-    coords_detail_b = db.relationship("CoordsDetailB", backref=db.backref("coords_event"))
+    #coords_detail_a = db.relationship("CoordsDetailA", backref=db.backref("coords_event"))
+    #coords_detail_a = db.relationship("CoordsDetailA")
+    #coords_detail_b = db.relationship("CoordsDetailB", backref=db.backref("coords_event"))
+    #coords_detail_b = db.relationship("CoordsDetailB")
+    # 外部結合は後で方法を確認する
 
 
 class CoordsDetailA(db.Model):
@@ -52,11 +74,11 @@ class CoordsDetailA(db.Model):
 
     __table_args__ = (db.Index("ix_coords_detail_a_1", "event_id", "player", "latitude", "longitude", unique=False,), )
 
-    event_id = db.Column('event_id', db.String(255),
-        db.ForeignKey('coords_event.event_id',onupdate='CASCADE', ondelete='CASCADE'),
-        primary_key=True,
-    )
-    #event_id = db.Column(db.String(255), primary_key=True, index=True)
+    #event_id = db.Column('event_id', db.String(255),
+    #    db.ForeignKey('coords_event.event_id',onupdate='CASCADE', ondelete='CASCADE'),
+    #    primary_key=True,
+    #)
+    event_id = db.Column(db.String(255), primary_key=True, index=True)
     player = db.Column(db.String(255), primary_key=True)
     visit_order = db.Column(db.Integer, primary_key=True)
     site_id = db.Column(db.String(255))
@@ -77,11 +99,11 @@ class CoordsDetailB(db.Model):
 
     __table_args__ = (db.Index("ix_coords_detail_b_1", "event_id", "player", "latitude", "longitude", unique=False,), )
 
-    event_id = db.Column('event_id', db.String(255),
-        db.ForeignKey('coords_event.event_id',onupdate='CASCADE', ondelete='CASCADE'),
-        primary_key=True,
-    )
-    #event_id = db.Column(db.String(255), primary_key=True, index=True)
+    #event_id = db.Column('event_id', db.String(255),
+    #    db.ForeignKey('coords_event.event_id',onupdate='CASCADE', ondelete='CASCADE'),
+    #    primary_key=True,
+    #)
+    event_id = db.Column(db.String(255), primary_key=True, index=True)
     player = db.Column(db.String(255), primary_key=True)
     visit_order = db.Column(db.Integer, primary_key=True)
     site_id = db.Column(db.String(255))
@@ -93,6 +115,29 @@ class CoordsDetailB(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now, onupdate=datetime.datetime.now)
 
+
+class CoordsDetailsView:
+    __view__ = View(
+        'coords_details_view', MetaData(),
+        db.Column('event_id', db.String(255), primary_key=True),
+        db.Column('player', db.String(255), primary_key=True),
+        db.Column('latitude', db.Float),
+        db.Column('longitude', db.Float),
+        db.Column('visit_order', db.Integer, primary_key=True),
+        db.Column('val_a', db.Float),
+        db.Column('val_b', db.Float),
+    )
+
+    __definition__ = text(f'''
+    SELECT a.event_id, a.player, a.latitude, a.longitude, a.visit_order, a.val_a, b.val_b
+    FROM coords_detail_a AS a JOIN coords_detail_b AS b
+    ON a.event_id=b.event_id
+    AND a.player=b.player
+    AND a.latitude=b.latitude
+    AND a.longitude=b.longitude;
+    ''')
+
+views.append(CoordsDetailsView)
 
 
 class User(db.Model):
@@ -187,4 +232,9 @@ class Dots(db.Model):
     firing_rate = db.Column(db.Float, nullable=False)
 
 
+
+# for views
+for view in views:
+    if not hasattr(view, '_sa_class_manager'):
+        orm.mapper(view, view.__view__)
 
