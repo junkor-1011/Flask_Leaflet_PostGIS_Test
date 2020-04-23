@@ -94,4 +94,9 @@ pd.read_sql_query("select * from dots limit 100", con=engine, index_col='id')
     - https://mycodingjp.blogspot.com/2019/03/flask-sqlalchemy.html
 
 
+##### SQLAlchemy-Views
+
+- viewを実テーブルのモデルのように扱うには工夫が必要な様子
+    - https://www.it-swarm.dev/ja/python/sqlalchemy%E3%81%A7sql%E3%83%93%E3%83%A5%E3%83%BC%E3%82%92%E4%BD%9C%E6%88%90%E3%81%99%E3%82%8B%E6%96%B9%E6%B3%95%E3%81%AF%EF%BC%9F/941845648/
+    - https://stackoverflow.com/questions/9766940/how-to-create-an-sql-view-with-sqlalchemy
 
