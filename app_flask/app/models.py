@@ -50,7 +50,7 @@ class CoordsDetailA(db.Model):
     
     __tablename__ = "coords_detail_a"
 
-    __table_args__ = (db.Index("ix_coords_detail_a_1", "event_id", "player", "latitude", "longitude", unique=True,), )
+    __table_args__ = (db.Index("ix_coords_detail_a_1", "event_id", "player", "latitude", "longitude", unique=False,), )
 
     event_id = db.Column('event_id', db.String(255),
         db.ForeignKey('coords_event.event_id',onupdate='CASCADE', ondelete='CASCADE'),
@@ -75,7 +75,7 @@ class CoordsDetailB(db.Model):
 
     __tablename__ = "coords_detail_b"
 
-    __table_args__ = (db.Index("ix_coords_detail_b_1", "event_id", "player", "latitude", "longitude", unique=True,), )
+    __table_args__ = (db.Index("ix_coords_detail_b_1", "event_id", "player", "latitude", "longitude", unique=False,), )
 
     event_id = db.Column('event_id', db.String(255),
         db.ForeignKey('coords_event.event_id',onupdate='CASCADE', ondelete='CASCADE'),
