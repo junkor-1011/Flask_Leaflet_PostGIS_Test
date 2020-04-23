@@ -6,6 +6,10 @@ flask
 flask-sqlalchemy
 SQLAlchemy
 Flask-Migrate
+Flask-Views
+Flask-Admin
+Flask-RESTful
+flask-marshmallow
 pymysql
 psycopg2
 #flask-httpauth
