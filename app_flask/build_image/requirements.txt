@@ -5,8 +5,8 @@ uwsgi
 flask
 flask-sqlalchemy
 SQLAlchemy
+sqlalchemy-views
 Flask-Migrate
-Flask-Views
 Flask-Admin
 Flask-RESTful
 flask-marshmallow
