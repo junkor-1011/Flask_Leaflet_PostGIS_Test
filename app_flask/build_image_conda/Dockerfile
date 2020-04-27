@@ -75,15 +75,7 @@ RUN cd /tmp && \
     conda config --system --set show_channel_urls true && \
     conda config --system --set channel_priority strict && \
     if [ ! $PYTHON_VERSION = 'default' ]; then conda install --yes python=$PYTHON_VERSION; fi && \
-    conda install --quiet --yes conda pip && \
     conda update --all --quiet --yes
-#    conda update --all --quiet --yes && \
-
-
-#    echo "conda ${CONDA_VERSION}" >> $CONDA_DIR/conda-meta/pinned && \
-#    conda list python | grep '^python ' | tr -s ' ' | cut -d '.' -f 1,2 | sed 's/$/.*/' >> $CONDA_DIR/conda-meta/pinned && \
-#    conda install --quiet --yes conda && \
-#    conda install --quiet --yes pip && \
 
 # install packages
 RUN conda env update -n base -f /tmp/conda_packages.yml && \
