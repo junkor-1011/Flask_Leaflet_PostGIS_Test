@@ -28,7 +28,12 @@ RUN apt-get clean && \
 # 一般ユーザーアカウントを追加
 ENV USER_NAME=app
 ARG USER_UID=1000
-RUN useradd -m -u ${USER_UID} ${USER_NAME}
+ARG PASSWD=password
+
+RUN useradd -m -s /bin/bash -u ${USER_UID} ${USER_NAME} && \
+    gpasswd -a ${USER_NAME} sudo && \
+    echo "${USER_NAME}:${PASSWD}" | chpasswd && \
+    echo "${USER_NAME} ALL=(ALL) ALL" >> /etc/sudoers
 # 一般ユーザーにsudo権限を付与
 #RUN gpasswd -a ${UID} sudo
 
