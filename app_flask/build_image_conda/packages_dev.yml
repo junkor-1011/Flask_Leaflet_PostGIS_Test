@@ -1,0 +1,13 @@
+# for development
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - uwsgi
+  - flask>=1.1
+  - flask-sqlalchemy
+  - sqlalchemy>=1.3
+  - pymysql
+  - psycopg2
+  - pip:
+    - sqlalchemy-views>=0.2
