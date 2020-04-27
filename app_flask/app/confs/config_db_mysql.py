@@ -24,7 +24,8 @@ class MySQL_DevelopmentConfig:
         'db_port': os.getenv('DB_PORT', '3306'),
     })
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_ECHO = False
+    #SQLALCHEMY_ECHO = False
+    SQLALCHEMY_ECHO = True  # for Develop and Test
 
 
 Config = MySQL_DevelopmentConfig

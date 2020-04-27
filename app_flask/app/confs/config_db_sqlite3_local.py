@@ -15,11 +15,10 @@ class SQLite3_DevelopmentConfig:
     DEBUG = True
 
     # SQLAlchemy
-    #SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://{user}:{password}@{host}:{db_port}/{db_name}?charset=utf8'.format(**{
-    SQLALCHEMY_DATABASE_URI = 'sqlite:////app/db_sqlite3/data.sqlite3'   # TMP
+    #SQLALCHEMY_DATABASE_URI = 'sqlite:////app/db_sqlite3/data.sqlite3'   # TMP
+    SQLALCHEMY_DATABASE_URI = 'sqlite:///../../db_sqlite3/data.sqlite3'   # TMP
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    #SQLALCHEMY_ECHO = False
-    SQLALCHEMY_ECHO = True  # for Develop and Test
+    SQLALCHEMY_ECHO = True      # for Test
 
 
 Config = SQLite3_DevelopmentConfig

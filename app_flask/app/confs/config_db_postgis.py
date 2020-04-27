@@ -24,7 +24,8 @@ class Postgis_DevelopmentConfig:
         'db_port': os.getenv('DB_PORT', '5432'),
     })
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SQLALCHEMY_ECHO = False
+    #SQLALCHEMY_ECHO = False
+    SQLALCHEMY_ECHO = True  # for Develop and Test
 
 
 Config = Postgis_DevelopmentConfig
