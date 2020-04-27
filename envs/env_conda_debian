@@ -1,0 +1,3 @@
+src_tag=conda_debian
+USER_UID=1000
+PORT=8443
