@@ -21,7 +21,7 @@ RUN apt-get update && \
 ENV USER_NAME=app
 ARG USER_UID=1000
 ARG PASSWD=password
-RUN useradd -m -u ${USER_UID} ${USER_NAME} && \
+RUN useradd -m -s /bin/bash -u ${USER_UID} ${USER_NAME} && \
     gpasswd -a ${USER_NAME} sudo && \
     echo "${USER_NAME}:${PASSWD}" | chpasswd && \
     echo "${USER_NAME} ALL=(ALL) ALL" >> /etc/sudoers
@@ -70,21 +70,25 @@ RUN cd /tmp && \
     echo "${MINICONDA_MD5} *Miniconda3-py37_${MINICONDA_VERSION}-Linux-x86_64.sh" | md5sum -c - && \
     /bin/bash Miniconda3-py37_${MINICONDA_VERSION}-Linux-x86_64.sh -f -b -p $CONDA_DIR && \
     rm Miniconda3-py37_${MINICONDA_VERSION}-Linux-x86_64.sh && \
-    echo "conda ${CONDA_VERSION}" >> $CONDA_DIR/conda-meta/pinned && \
     conda config --system --prepend channels conda-forge && \
     conda config --system --set auto_update_conda false && \
     conda config --system --set show_channel_urls true && \
     conda config --system --set channel_priority strict && \
     if [ ! $PYTHON_VERSION = 'default' ]; then conda install --yes python=$PYTHON_VERSION; fi && \
-    conda list python | grep '^python ' | tr -s ' ' | cut -d '.' -f 1,2 | sed 's/$/.*/' >> $CONDA_DIR/conda-meta/pinned && \
-    conda install --quiet --yes conda && \
-    conda install --quiet --yes pip && \
-    conda update --all --quiet --yes && \
-    conda clean --all -f -y && \
-    rm -rf /home/$NB_USER/.cache/yarn
+    conda install --quiet --yes conda pip && \
+    conda update --all --quiet --yes
+#    conda update --all --quiet --yes && \
+
+
+#    echo "conda ${CONDA_VERSION}" >> $CONDA_DIR/conda-meta/pinned && \
+#    conda list python | grep '^python ' | tr -s ' ' | cut -d '.' -f 1,2 | sed 's/$/.*/' >> $CONDA_DIR/conda-meta/pinned && \
+#    conda install --quiet --yes conda && \
+#    conda install --quiet --yes pip && \
 
 # install packages
-RUN conda env update -n base -f /tmp/conda_packages.yml
+RUN conda env update -n base -f /tmp/conda_packages.yml && \
+    conda clean --all -f -y && \
+    rm -rf /home/$NB_USER/.cache/yarn
 
 # environment
 # containerに入って作業するとき用(ubuntuだと確か不要)
