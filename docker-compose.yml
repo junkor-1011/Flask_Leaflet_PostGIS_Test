@@ -69,6 +69,17 @@ services:
     networks:
       - db_network
 
+  phppgadmin:
+    image: dockage/phppgadmin:latest
+    container_name: phppgadmin
+    ports:
+      - ${PORT_PHPPGADMIN:-10081}:80
+    environment:
+      PHP_PG_ADMIN_SERVER_HOST: ${PHP_PG_ADMIN_SERVER_HOST:-db_postgis}
+    restart: unless-stopped
+    networks:
+      - db_network      
+
 networks:
   nginx_network:
     driver: bridge
