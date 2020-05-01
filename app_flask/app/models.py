@@ -62,9 +62,9 @@ class CoordsEvent(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now)
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.datetime.now, onupdate=datetime.datetime.now)
     #coords_detail_a = db.relationship("CoordsDetailA", backref=db.backref("coords_event"))
-    #coords_detail_a = db.relationship("CoordsDetailA")
+    coords_detail_a = db.relationship("CoordsDetailA")
     #coords_detail_b = db.relationship("CoordsDetailB", backref=db.backref("coords_event"))
-    #coords_detail_b = db.relationship("CoordsDetailB")
+    coords_detail_b = db.relationship("CoordsDetailB")
     # 外部結合は後で方法を確認する
 
 
@@ -74,11 +74,11 @@ class CoordsDetailA(db.Model):
 
     __table_args__ = (db.Index("ix_coords_detail_a_1", "event_id", "player", "latitude", "longitude", unique=False,), )
 
-    #event_id = db.Column('event_id', db.String(255),
-    #    db.ForeignKey('coords_event.event_id',onupdate='CASCADE', ondelete='CASCADE'),
-    #    primary_key=True,
-    #)
-    event_id = db.Column(db.String(255), primary_key=True, index=True)
+    event_id = db.Column('event_id', db.String(255),
+        db.ForeignKey('coords_event.event_id',onupdate='CASCADE', ondelete='CASCADE'),
+        primary_key=True,
+    )
+    #event_id = db.Column(db.String(255), primary_key=True, index=True)
     player = db.Column(db.String(255), primary_key=True)
     visit_order = db.Column(db.Integer, primary_key=True)
     site_id = db.Column(db.String(255))
@@ -99,11 +99,11 @@ class CoordsDetailB(db.Model):
 
     __table_args__ = (db.Index("ix_coords_detail_b_1", "event_id", "player", "latitude", "longitude", unique=False,), )
 
-    #event_id = db.Column('event_id', db.String(255),
-    #    db.ForeignKey('coords_event.event_id',onupdate='CASCADE', ondelete='CASCADE'),
-    #    primary_key=True,
-    #)
-    event_id = db.Column(db.String(255), primary_key=True, index=True)
+    event_id = db.Column('event_id', db.String(255),
+        db.ForeignKey('coords_event.event_id',onupdate='CASCADE', ondelete='CASCADE'),
+        primary_key=True,
+    )
+    #event_id = db.Column(db.String(255), primary_key=True, index=True)
     player = db.Column(db.String(255), primary_key=True)
     visit_order = db.Column(db.Integer, primary_key=True)
     site_id = db.Column(db.String(255))
