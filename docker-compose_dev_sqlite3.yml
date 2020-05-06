@@ -18,7 +18,7 @@ services:
   app_flask:
     container_name: app_flask
     hostname: ap_server
-    image: app_flask_test_${src_tag}
+    image: app_flask_test_${src_tag:-python37_slim_buster}
     expose: 
       - 5000
     networks:
