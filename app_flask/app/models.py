@@ -6,7 +6,8 @@ import datetime
 
 # sqlalchemy
 from sqlalchemy import Table, MetaData, orm
-from sqlalchemy.sql import text
+from sqlalchemy import and_, or_
+from sqlalchemy.sql import text, select, join, outerjoin, func
 
 import sqlalchemy_views
 
@@ -128,14 +129,35 @@ class CoordsDetailsView:
         db.Column('val_b', db.Float),
     )
 
-    __definition__ = text(f'''
-    SELECT a.event_id, a.player, a.latitude, a.longitude, a.visit_order, a.val_a, b.val_b
-    FROM coords_detail_a AS a JOIN coords_detail_b AS b
-    ON a.event_id=b.event_id
-    AND a.player=b.player
-    AND a.latitude=b.latitude
-    AND a.longitude=b.longitude;
-    ''')
+    #__definition__ = text(f'''
+    #SELECT a.event_id, a.player, a.latitude, a.longitude, a.visit_order, a.val_a, b.val_b
+    #FROM coords_detail_a AS a JOIN coords_detail_b AS b
+    #ON a.event_id=b.event_id
+    #AND a.player=b.player
+    #AND a.latitude=b.latitude
+    #AND a.longitude=b.longitude;
+    #''')
+        
+    #j = outerjoin(CoordsDetailA.__table__, CoordsDetailB.__table__,
+    #              and_(CoordsDetailA.__table__.c.event_id == CoordsDetailB.__table__.c.event_id,
+    #                   CoordsDetailA.__table__.c.player == CoordsDetailB.__table__.c.player,                    
+    #                   CoordsDetailA.__table__.c.latitude == CoordsDetailB.__table__.c.latitude,                    
+    #                   CoordsDetailA.__table__.c.longitude == CoordsDetailB.__table__.c.longitude,),
+    #)
+    a = CoordsDetailA.__table__
+    b = CoordsDetailB.__table__
+    j = outerjoin(a, b,
+                  and_(a.c.event_id == b.c.event_id,
+                       a.c.player == b.c.player,                    
+                       a.c.latitude == b.c.latitude,                    
+                       a.c.longitude == b.c.longitude,),
+                  full=False,   # TrueはPostgreなどでしかサポートされていない
+    )
+    q = select([a.c.event_id, a.c.player, a.c.latitude, a.c.longitude, a.c.visit_order, a.c.val_a, b.c.val_b]).select_from(j)
+    __definition__ = q
+
+    # clean
+    del a, b, j, q
 
 views.append(CoordsDetailsView)
 
